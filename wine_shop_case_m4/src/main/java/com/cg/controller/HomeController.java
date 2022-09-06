@@ -32,7 +32,7 @@ public class HomeController {
 
     @GetMapping()
     public String showIndex() {
-        return "redirect:/product";
+        return "redirect:/products";
     }
 
     @GetMapping("/login")

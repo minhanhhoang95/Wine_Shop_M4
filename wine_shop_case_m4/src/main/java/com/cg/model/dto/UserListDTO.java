@@ -121,7 +121,7 @@ public class UserListDTO implements Validator {
         String phoneCheck = userListDTO.getPhone();
 
         if ((fullNameCheck.trim().isEmpty())){
-            errors.rejectValue("fullName", "fullName.isEmpty", "Tên đầy đủ không được để trống, vd: Tran Ba Quoc Dai");
+            errors.rejectValue("fullName", "fullName.isEmpty", "Tên đầy đủ không được để trống");
             return;
         }
 

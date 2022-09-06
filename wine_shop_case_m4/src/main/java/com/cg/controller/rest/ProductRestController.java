@@ -168,7 +168,7 @@ public class ProductRestController {
         try {
 
 
-            Optional<Category> category = categoryService.findById ( productOptional.get ().getCategory ().getId () );
+            Optional<Category> category = categoryService.findById ( productDTO.getCategory ().getId () );
             if ( !category.isPresent () ) {
                 throw new DataInputException ( "Category not exists!" );
             }
