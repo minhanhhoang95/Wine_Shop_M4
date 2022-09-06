@@ -1,0 +1,1285 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Product management</title>
+<!--    <th:block th:include="/layout/head :: head"/>-->
+    <th:block th:replace="/shared/head :: head"/>
+</head>
+<body>
+<div id="wrapper">
+    <!-- Topbar Start -->
+    <th:block th:replace="/shared/navbar-custom :: navbar-custom"/>
+    <!-- end Topbar -->
+    <!-- ========== Left Sidebar Start ========== -->
+    <th:block th:replace="/shared/left-side-menu :: left-side-menu"/>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- Content -->
+                <div class="content">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <div class="row align-items-end">
+                            <div class="col-sm mb-2 mb-sm-0">
+<!--                                <nav aria-label="breadcrumb">-->
+<!--                                    <ol class="breadcrumb breadcrumb-no-gutter">-->
+<!--                                        <li class="breadcrumb-item"><a class="breadcrumb-link"-->
+<!--                                                                       href="javascript:;">Admin</a>-->
+<!--                                        </li>-->
+<!--                                        <li class="breadcrumb-item"><a class="breadcrumb-link"-->
+<!--                                                                       href="javascript:;">Product</a></li>-->
+<!--                                        <li class="breadcrumb-item active" aria-current="page">List</li>-->
+<!--                                    </ol>-->
+<!--                                </nav>-->
+
+                                <h1 class="page-header-title">Product</h1>
+                            </div>
+
+                            <div class="col-sm-auto">
+                                <button class="btn btn-primary btnCreate">
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Product
+                                </button>
+                            </div>
+                        </div>
+                        <!-- End Row -->
+                    </div>
+                    <!-- End Page Header -->
+                    <!-- Card -->
+                    <div class="card">
+                        <!-- Header -->
+                        <div class="card-header">
+                            <!--                    <div class="row justify-content-between align-items-center flex-grow-1">-->
+                            <!--                        <div class="col-sm-12 col-md-6 mb-4 mb-sm-0">-->
+                            <!--                            <form class="col-sm-6">-->
+                            <!--                                &lt;!&ndash; Search &ndash;&gt;-->
+                            <!--                                <div class="input-group input-group-merge input-group-flush">-->
+                            <!--                                    <div class="input-group-prepend">-->
+                            <!--                                        <div class="input-group-text">-->
+                            <!--                                            <i class="tio-search"></i>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                    <input id="searchTable" type="search" class="form-control"-->
+                            <!--                                           placeholder="Search products"-->
+                            <!--                                           aria-label="Search products">-->
+                            <!--                                </div>-->
+                            <!--                                &lt;!&ndash; End Search &ndash;&gt;-->
+                            <!--                            </form>-->
+                            <!--                        </div>-->
+                            <!--                    </div>-->
+                            <!--                    &lt;!&ndash; End Row &ndash;&gt;-->
+                        </div>
+                        <!-- End Header -->
+
+                        <!-- Table -->
+                        <div class="table-responsive datatable-custom">
+                            <table id="table-product"
+                                   class="table table-lg table-borderless table-hover table-thead-bordered table-nowrap table-align-middle card-table">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th class="table-column-pl-0 text-center">Title</th>
+                                    <th>Category</th>
+                                    <th>Price (VND)</th>
+                                    <th>Sold</th>
+                                    <th>Image</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- End Table -->
+                    </div>
+                    <!-- End Card -->
+                </div>
+                <!-- End Content -->
+
+                <!-- Footer -->
+
+                <!--        <th:block th:replace="/layout/footer :: footer"/>-->
+
+                <!-- End Footer -->
+
+                <!--    Modal start -->
+
+
+
+                <!--        <th:block th:replace="product_edit :: product_edit"/>-->
+
+                <!--        <th:block th:replace="/layout/modal/user/admin_profile :: admin_profile"/>-->
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="box-body">
+
+        <input type="hidden" id="currentRow"/>
+
+        <div id="product_items">
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Create Product Modal -->
+<div class="modal fade" id="mdCreate" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #377dff; padding: 12px;">
+                <h3 style="color: white" class="modal-title">Create Product</h3>
+                <button type="button" class="btn-close btnClose" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-alert-danger hide" id="createErr"></div>
+                <form id="frmCreate" action="" method="post">
+                    <div class="card-body">
+                        <div class="row form-group">
+                            <label for="titleCreate" class="col-sm-3 col-form-label input-label">Title</label>
+                            <div class="col-sm-9">
+                                <div class="input-group input-group-sm-down-break">
+                                    <input type="text" class="form-control" name="titleCreate" id="titleCreate"
+                                           placeholder="Product title" aria-label="Product title">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="imageCreate"
+                                   class="col-sm-3 col-form-label input-label">Image</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="imageCreate" id="imageCreate"
+                                       placeholder="Product's Image" aria-label="Image">
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <label for="priceCreate" class="col-sm-3 col-form-label input-label">Price
+                                (VND) </label>
+                            <div class="col-sm-9">
+                                <div class="input-group input-group-sm-down-break">
+                                    <input type="text" class="form-control" name="priceCreate" id="priceCreate"
+                                           placeholder="Product's price" aria-label="Product's price">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label">Category</label>
+                            <div class="col-sm-12">
+                                <select name="category" id="category" class="form-select">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="btnCreate" class="btn btn-outline-primary">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Create
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product user Modal -->
+
+<!-- Edit Product Modal -->
+<div class="modal fade" id="mdEdit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #377dff; padding: 12px;">
+                <h3 style="color: white" class="modal-title">Edit product</h3>
+                <button type="button" class="btn-close btnClose" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-alert-danger hide" id="editErr"></div>
+                <form id="frmEdit" action="" method="post">
+                    <div class="card-body">
+                        <input type="hidden" id="productIdEdit">
+                        <div class="row form-group">
+                            <label for="titleEdit" class="col-sm-3 col-form-label input-label">Title</label>
+                            <div class="col-sm-9">
+                                <div class="input-group input-group-sm-down-break">
+                                    <input type="text" class="form-control" name="titleEdit" id="titleEdit"
+                                           placeholder="Product title" aria-label="Product title">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="imageEdit"
+                                   class="col-sm-3 col-form-label input-label">Image</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="imageEdit" id="imageEdit"
+                                       placeholder="Product's Image" aria-label="Image">
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <label for="priceEdit" class="col-sm-3 col-form-label input-label">Price
+                                (VND) </label>
+                            <div class="col-sm-9">
+                                <div class="input-group input-group-sm-down-break">
+                                    <input type="text" class="form-control" name="priceEdit" id="priceEdit"
+                                           placeholder="Product's price" aria-label="Product's price">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label">Category</label>
+                            <div class="col-sm-12">
+                                <select name="category" id="categoryUp" class="form-select">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="btnEditProduct" class="btn btn-outline-success">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Edit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Edit product Modal -->
+
+<!--<th:block th:replace="modal_create :: modal_create"/>-->
+
+
+<div class="loader hide"></div>
+
+<!--    <div class="footer"></div>-->
+
+<!--    <th:block th:include="product/footer :: footer"/>-->
+
+<th:block th:replace="layout/script :: script"/>
+<!--<th:block th:replace="/product/product_creat :: product_creat"/>-->
+<!--<th:block th:insert="product_creat :: product_creat"></th:block>-->
+<!--<th:block th:include="/product_create"></th:block>-->
+
+
+<script type="text/javascript" src="/assets/js/app.page.js"></script>
+<!--    <script type="text/javascript" src="/assets/js/custom-validation.js"></script>-->
+
+<script>
+    let page = {
+        urls: {
+            getAllCategories: AppPage.BASE_URL_CATEGORY,
+
+        },
+        elements: {},
+        loadData: {},
+        commands: {},
+        dialogs: {
+            elements: {},
+            loadData: {},
+            commands: {},
+            close: {},
+            alertDanger: {},
+            inputError: {}
+        }
+    }
+    let user = new User();
+    let category = new Category();
+    function init() {
+        getAllProducts();
+        // selectAddressToUpdate();
+    }
+    init();
+
+    let product = new Product();
+
+    page.loadData.getAllCategories = () => {
+        $.ajax({
+            type: "GET",
+            url: page.urls.getAllCategories,
+        }).done((data) => {
+            console.log(data);
+            $("#category").empty();
+
+            $.each(data, (index, item) => {
+                let str = `<option value="${item.id}">${item.title}</option>`;
+
+                $("#category").append(str);
+                $("#categoryUp").append(str);
+            });
+
+        }).fail(function () {
+            AppPage.SweetAlert.showErrorAlert(AppPage.AlertMessageEn.ERROR_404);
+        }).always(function () {
+            // page.elements.loader.addClass("hide");
+            page.elements.loading = false;
+        });
+    }
+    page.loadData.getAllCategories();
+
+    //get all product
+    function getAllProducts() {
+
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "GET",
+            url: "http://localhost:8099/api/products"
+        })
+            .done((data) => {
+                showListProduct(data);
+
+            })
+            .fail((jqXHR) => {
+                $('#table-product tbody').empty();
+
+                console.log(jqXHR.responseJSON);
+                if (jqXHR.responseJSON.message) {
+                    let message = jqXHR.responseJSON.message;
+
+                    let str = `<td colspan="6" id="message-error" class="error text-center" >${message}</td>`;
+
+                    $("#table-product tbody").append(str);
+                }
+            })
+    }
+
+    function getProductById(id) {
+
+        return $.ajax({
+            headers: {
+                "Accept": "application/json",
+                "Content-type": "application/json"
+            },
+            type: "GET",
+            url: 'http://localhost:8099/api/products/' + id
+        })
+            .done((data) => {
+                product = data;
+            })
+            .fail((jqXHR) => {
+                console.log(jqXHR);
+                $('#mainErr').empty();
+
+                $("#mainErr").addClass('show').removeClass('hide');
+
+                if (jqXHR.responseJSON.message) {
+                    let message = jqXHR.responseJSON.message;
+                    console.log(message);
+
+                    Swal.fire({
+                        title: message,
+                        icon: 'warning',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+            });
+    }
+
+    function getUserById(id) {
+
+        return $.ajax({
+            headers: {
+                "Accept": "application/json",
+                "Content-type": "application/json"
+            },
+            type: "GET",
+            url: 'http://localhost:8099/api/users/' + id
+        })
+            .done((data) => {
+                user = data;
+            })
+            .fail((jqXHR) => {
+                console.log(jqXHR);
+                $('#mainErr').empty();
+
+                $("#mainErr").addClass('show').removeClass('hide');
+
+                if (jqXHR.responseJSON.message) {
+                    let message = jqXHR.responseJSON.message;
+                    console.log(message);
+
+                    Swal.fire({
+                        title: message,
+                        icon: 'warning',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+            });
+    }
+
+    // Show all Product
+    function showListProduct(data) {
+
+        $.each(data, (i, item) => {
+            product = item;
+            let str = `
+            <tr id="tr_${product.id}">
+                <td>
+                  <span class="d-block h5 mb-0">${product.title}</span>
+                </td>
+                <td>${product.category.title}</td>
+                <td class="text-end">
+                  ${formatCash(product.price)}
+                </td>
+                <td class="text-center">
+                    ${product.sold}
+                </td>
+                <td class="text-center">
+                    <img src="/images/product/${product.image}" alt="image">
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-success update" data-id="${product.id}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Update">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update
+                    </button>
+
+                    <button class="btn btn-sm btn-outline-danger remove" data-id="${product.id}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Remove">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i> Remove
+                    </button>
+                </td>
+            </tr>
+        `;
+
+            $("#table-product tbody").prepend(str);
+
+            handleShowModal();
+        });
+    }
+
+    function handleShowModal() {
+        removeEventShowModal();
+        handleShowModalCreateProduct();
+        handleShowRemove();
+        handleShowEditModal();
+
+        handleShowProfileAdmin();
+    }
+
+    //Remove even show
+    function removeEventShowModal() {
+        $(".update").off();
+        $(".remove").off();
+        $(".profile-admin").off();
+    }
+
+
+    // Show form create product
+    function handleShowModalCreateProduct() {
+        let btnCreate = $(".btnCreate");
+
+        btnCreate.on('click', function () {
+            $("#mdCreate").modal('show');
+        });
+    }
+
+    // Create product
+    function doCreateProduct() {
+
+        let title = $("#titleCreate").val();
+        let slug = title;
+        let image = $('#imageCreate').val();
+        let price = +$('#priceCreate').val();
+        let sold = 0;
+        let categoryId = $('#category').val();
+        let categoryTitle = $("#category").text();
+         category = new Category(categoryId, categoryTitle);
+
+        product = new Product(0, title, slug, image, price, sold, category )
+        console.log(product);
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "POST",
+            url: "http://localhost:8099/api/products/create",
+            data: JSON.stringify(product)
+        })
+            .done((data) => {
+                product = data;
+                console.log(data);
+                $('#frmCreate')[0].reset();
+                $("#mdCreate .modal-body .modal-alert-danger").addClass('hide').removeClass('show');
+                $("#mdCreate").modal('hide');
+
+                let str = `
+                        <tr id="tr_${product.id}">
+                            <td>
+                              <span class="d-block h5 mb-0">${product.title}</span>
+                            </td>
+                            <td>${product.category.title}</td>
+                            <td class="text-end">
+                              ${formatCash(product.price)}
+                            </td>
+                            <td class="text-center">
+                                ${product.sold}
+                            </td>
+                            <td class="text-center">
+                                <img src="/images/product/${product.image}" alt="image">
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-success update" data-id="${product.id}" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" data-bs-title="Update">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update
+                                </button>
+
+                                <button class="btn btn-sm btn-outline-danger remove" data-id="${product.id}" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" data-bs-title="Remove">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Remove
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+
+                $("#table-product tbody").prepend(str);
+                Swal.fire({
+                    // position: 'top-end',
+                    icon: 'success',
+                    title: 'Create Product Successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+                handleShowModal();
+            })
+            .fail((jqXHR) => {
+                console.log(jqXHR);
+
+                $('#mdCreate .modal-body .modal-alert-danger').fadeIn(1000).empty().addClass('show').removeClass('hide').fadeOut(6000);
+
+                if (jqXHR.responseJSON.message) {
+                    let message = jqXHR.responseJSON.message;
+
+                    let str = `<div id="message-error" class="displayErr">
+                                  <label class="error" for="message">${message}</label>
+                                  <i class="fa fa-times closeMess" aria-hidden="true"></i>
+                               </div>`;
+
+                    $("#mdCreate .modal-body .modal-alert-danger").prepend(str);
+                    closeMessage();
+
+                } else if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        let str = `<div id="${key}-error" class="displayErr">
+                                            <label class="error" for="${key}De">${item}</label>
+                                            <i class="fa fa-times closeErr" aria-hidden="true"></i>
+                                        </div>`;
+                        $("#" + key).addClass("error");
+
+                        $("#mdCreate .modal-body .modal-alert-danger").prepend(str);
+                        $('#transactionAmountDep').val("");
+                        closeError(key);
+
+                    })
+                }
+            });
+    }
+
+    let btnCreateProduct = $("#btnCreate");
+    btnCreateProduct.on('click', () => {
+        // $("#frmCreate").submit();
+        doCreateProduct();
+    });
+
+    // remove user
+    function handleShowRemove() {
+
+        let btnRemove = $(".remove");
+
+        btnRemove.on('click', function () {
+            let id = $(this).data('id');
+
+            doRemove(id);
+        })
+    }
+
+    function doRemove(productId) {
+        getProductById(productId).then(() => {
+            Swal.fire({
+                title: `Are you sure remove '${product.title}'?`,
+                text: "The data will be moved to the recycle bin!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, remove!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-type": "application/json"
+                        },
+                        type: "PATCH",
+                        url: 'http://localhost:8099/api/products/remove',
+                        data: JSON.stringify(product)
+                    })
+                        .done((data) => {
+                            $('#table-product tbody').empty();
+
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: `Product '${product.title}' has been remove`,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                            getAllProducts();
+                        })
+                        .fail((jqXHR) => {
+                            console.log(jqXHR);
+                        });
+                }
+            })
+                .catch(() => {
+                    Swal.fire({
+                        title: "Product invalid",
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                });
+        })
+    }
+
+    // show edit modal
+    function handleShowEditModal() {
+
+        let btnEdit = $(".update");
+
+        btnEdit.on('click', function () {
+
+            let id = $(this).data('id');
+
+            getProductById(id).then(() => {
+
+                $("#productIdEdit").val(product.id);
+                $("#titleEdit").val(product.title);
+                $("#imageEdit").val(product.image);
+                $("#priceEdit").val(product.price);
+                $("#categoryUp").val(product.category.id);
+
+                $("#mdEdit").modal('show');
+            })
+        })
+    }
+
+    // do edit
+    function doEditProduct() {
+        let id = $("#productIdEdit").val();
+
+        let title = $("#titleEdit").val();
+        let slug = title;
+        let image = $('#imageEdit').val();
+        let price = $('#priceEdit').val();
+        let sold = 0;
+        let categoryId = $('#categoryUp').val();
+        let categoryTitle = $("#categoryUp").text();
+        category = new Category(categoryId, categoryTitle);
+
+        let product =  new Product(id, title, slug, image, price, sold, category );
+
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "PUT",
+            url: "http://localhost:8099/api/products/edit",
+            data: JSON.stringify(product)
+        })
+            .done((data) => {
+
+                $("#mdEdit .modal-body .modal-alert-danger").addClass('hide').removeClass('show');
+
+                drawProduct(data);
+
+                $("#mdEdit").modal('hide');
+
+                Swal.fire({
+                    // position: 'top-end',
+                    icon: 'success',
+                    title: 'Edit product Successfully',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+
+
+            })
+            .fail((jqXHR) => {
+                console.log(jqXHR);
+
+                $('#mdEdit .modal-body .modal-alert-danger').fadeIn(1000).empty().addClass('show').removeClass('hide').fadeOut(6000);
+
+                if (jqXHR.responseJSON.message) {
+                    let message = jqXHR.responseJSON.message;
+
+                    let str = `<div id="message-error" class="displayErr">
+                                  <label class="error" for="message">${message}</label>
+                                  <i class="fa fa-times closeMess" aria-hidden="true"></i>
+                               </div>`;
+
+                    $("#mdEdit .modal-body .modal-alert-danger").prepend(str);
+                    closeMessage();
+
+                } else if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        let str = `<div id="${key}-error" class="displayErr">
+                                            <label class="error" for="${key}De">${item}</label>
+                                            <i class="fa fa-times closeErr" aria-hidden="true"></i>
+                                        </div>`;
+                        $("#" + key).addClass("error");
+
+                        $("#mdEdit .modal-body .modal-alert-danger").prepend(str);
+                        closeError(key);
+
+                    })
+                }
+            });
+    }
+    let btnEditProduct = $("#btnEditProduct");
+    btnEditProduct.on('click', () => {
+        doEditProduct();
+        // $("#frmProfileAdmin").submit();
+    });
+
+    // format money
+    function formatCash(coin) {
+        let str = coin.toString();
+        return str.split('').reverse().reduce((prev, next, index) => {
+            return ((index % 3) ? next : (next + ',')) + prev;
+        });
+    }
+
+    //search filter JQuery
+    $(document).ready(function(){
+        $("#searchTable").on("keyup", function() {
+            let value = $(this).val().toLowerCase();
+            $("#table-product tbody tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+    //draw product
+    function drawProduct(product) {
+        let str = `
+            <tr id="tr_${product.id}">
+                <td>
+                  <span class="d-block h5 mb-0">${product.title}</span>
+                </td>
+                <td>${product.category.title}</td>
+                <td class="text-end">
+                  ${formatCash(product.price)}
+                </td>
+                <td class="text-center">
+                    ${product.sold}
+                </td>
+                <td class="text-center">
+                    <img src="/images/product/${product.image}" alt="image">
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-success update" data-id="${product.id}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Update">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update
+                    </button>
+
+                    <button class="btn btn-sm btn-outline-danger remove" data-id="${product.id}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Remove">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i> Remove
+                    </button>
+                </td>
+            </tr>
+      `;
+        let trUser = $(`#tr_${product.id}`);
+        trUser.replaceWith(str);
+
+        handleShowModal();
+
+    }
+
+    // Show profile Admin
+    function handleShowProfileAdmin() {
+        let btnProfileAdmin = $(".profile-admin");
+
+        btnProfileAdmin.on('click', function () {
+
+            let id = $('.profile-admin').data('id');
+
+            getUserById(id).then(() => {
+
+                $("#adminIdPro").val(user.id);
+                $("#avatarAdminPro").val(user.avatar);
+                $("#usernameAdminPro").val(user.username);
+                $("#fullNameAdminPro").val(user.fullName);
+                $("#emailAdminPro").val(user.email);
+                $("#phoneAdminPro").val(user.phone);
+                $("#provinceAdminPro").val(user.locationRegion.provinceId);
+
+                console.log(user.locationRegion.provinceId);
+
+                let avatar = user.avatar;
+                let str = `<img id="avatarAdminPro" class="rounded-circle mx-auto" width="250" height="250"
+                                             src="/images/avatar/${avatar}" alt="Image Description">`;
+
+                $('.avatar-admin').empty().append(str);
+
+                getAllDistrictsByProvinceId(user.locationRegion.provinceId).then(() => {
+
+                    $("#districtAdminPro").val(user.locationRegion.districtId);
+
+                    console.log(user.locationRegion.districtId);
+
+
+                    getAllWardsByDistrictId(user.locationRegion.districtId).then(() => {
+
+                        $("#wardAdminPro").val(user.locationRegion.wardId);
+                        $("#addressAdminPro").val(user.locationRegion.address);
+
+                        console.log(user.locationRegion.wardId);
+
+
+                        $("#mdProfileAdmin").modal('show');
+                    })
+                })
+            })
+        })
+    }
+
+    // change to edit admin
+    $('#changeUsernameA').on('click', () => {
+        $('#usernameAdminPro').removeAttr("readonly").focus();
+        $('.edit').removeClass('hide').addClass('show');
+    })
+    $('#changeFullNameA').on('click', () => {
+        $('#fullNameAdminPro').removeAttr("readonly").focus();
+        $('.edit').removeClass('hide').addClass('show');
+    })
+    $('#changeEmailA').on('click', () => {
+        $('#emailAdminPro').removeAttr("readonly").focus();
+        $('.edit').removeClass('hide').addClass('show');
+    })
+    $('#changePhoneA').on('click', () => {
+        $('#phoneAdminPro').removeAttr("readonly").focus();
+        $('.edit').removeClass('hide').addClass('show');
+    })
+
+    $('#changeLocationA').on('click', () => {
+        $('#provinceAdminPro').removeAttr("disabled");
+        $('#districtAdminPro').removeAttr("disabled");
+        $('#wardAdminPro').removeAttr("disabled");
+        $('#addressAdminPro').removeAttr("readonly");
+
+        $('.edit').removeClass('hide').addClass('show');
+
+        changeLocationEdit();
+        // selectAddressToUpdate();
+    })
+
+    // Edit Admin
+    function doEditAdmin() {
+        let id = $("#adminIdPro").val();
+        let avatar = $("#avatarAdminPro").val();
+        let username = $('#usernameAdminPro').val();
+        let password = "password";
+        let fullName = $('#fullNameAdminPro').val();
+        let email = $('#emailAdminPro').val();
+        let phone = $('#phoneAdminPro').val();
+
+        let provinceId = $('#provinceAdminPro').val();
+        let districtId = $('#districtAdminPro').val();
+        let wardId = $('#wardAdminPro').val();
+        let address = $('#addressAdminPro').val();
+
+        let province_name;
+        let district_name;
+        let ward_name;
+
+        $.each(provinces.results, (i, item) => {
+            if (item.province_id === provinceId) {
+                province_name = item.province_name;
+            }
+        });
+
+        $.each(districts.results, (i, district) => {
+            if (district.district_id === districtId) {
+                district_name = district.district_name;
+            }
+        });
+
+        $.each(wards.results, (i, ward) => {
+            if (ward.ward_id === wardId) {
+                ward_name = ward.ward_name;
+            }
+        });
+
+        let locationRegion = new LocationRegion(0, provinceId, province_name, districtId, district_name, wardId, ward_name, address);
+
+        let user = {
+            id,
+            username,
+            fullName,
+            password,
+            email,
+            phone,
+            avatar,
+            locationRegion
+        }
+
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "POST",
+            url: "http://localhost:8099/api/users/edit-admin",
+            data: JSON.stringify(user)
+        })
+            .done(() => {
+
+                $("#mdProfileAdmin .modal-body .modal-alert-danger").addClass('hide').removeClass('show');
+
+                $('#usernameAdminPro').attr("readonly", "");
+                $('#fullNameAdminPro').attr("readonly", "");
+                $('#emailAdminPro').attr("readonly", "");
+                $('#phoneAdminPro').attr("readonly", "");
+                $('#provinceAdminPro').attr("disabled", "");
+                $('#districtAdminPro').attr("disabled", "");
+                $('#wardAdminPro').attr("disabled", "");
+                $('#addressAdminPro').attr("readonly", "");
+
+                $("#mdProfileAdmin").modal('hide');
+
+                Swal.fire({
+                    // position: 'top-end',
+                    icon: 'success',
+                    title: 'Edit Admin Successfully',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+
+                $('.edit').removeClass('show').addClass('hide');
+
+
+                $(".profile-admin").click();
+            })
+            .fail((jqXHR) => {
+                console.log(jqXHR);
+
+                $('#mdCreate .modal-body .modal-alert-danger').fadeIn(1000).empty().addClass('show').removeClass('hide').fadeOut(6000);
+
+                if (jqXHR.responseJSON.message) {
+                    let message = jqXHR.responseJSON.message;
+
+                    let str = `<div id="message-error" class="displayErr">
+                                  <label class="error" for="message">${message}</label>
+                                  <i class="fa fa-times closeMess" aria-hidden="true"></i>
+                               </div>`;
+
+                    $("#mdCreate .modal-body .modal-alert-danger").prepend(str);
+                    closeMessage();
+
+                } else if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        let str = `<div id="${key}-error" class="displayErr">
+                                            <label class="error" for="${key}De">${item}</label>
+                                            <i class="fa fa-times closeErr" aria-hidden="true"></i>
+                                        </div>`;
+                        $("#" + key).addClass("error");
+
+                        $("#mdCreate .modal-body .modal-alert-danger").prepend(str);
+                        $('#transactionAmountDep').val("");
+                        closeError(key);
+
+                    })
+                }
+            });
+    }
+
+    // Edit form validate
+    $("#mdProfileAdmin").on('hidden.bs.modal', () => {
+        $("#mdProfileAdmin .modal-alert-danger").removeClass("show").addClass("hide");
+        $("#frmProfileAdmin").validate().resetForm();
+    })
+
+    $("#frmProfileAdmin").validate({
+        rules: {
+            fullNameAdminPro: {
+                required: true,
+                minlength: 5,
+                maxlength: 30
+            },
+            emailAdminPro: {
+                required: true,
+                minlength: 5,
+                maxlength: 30,
+                valid_email: true
+            },
+            usernameAdminPro: {
+                required: true,
+                minlength: 8,
+                maxlength: 20
+            },
+            phoneAdminPro: {
+                required: true,
+                minlength: 8,
+                maxlength: 20,
+                isPhone: true
+            },
+            addressAdminPro: {
+                minlength: 5,
+                maxlength: 50
+            }
+        },
+        messages: {
+            fullNameAdminPro: {
+                required: "Please enter full name",
+                minlength: "Minimum name length is 5",
+                maxlength: "The maximum name length is 30"
+            },
+            emailAdminPro: {
+                required: "Please enter email",
+                minlength: "Minimum email length is 5",
+                maxlength: "The maximum email length is 30"
+            },
+            usernameAdminPro: {
+                required: "Please enter username",
+                minlength: "Minimum username length is 8",
+                maxlength: "The maximum username length is 20"
+            },
+            phoneAdminPro: {
+                required: "Please enter your phone",
+                minlength: "Minimum phone length is 9",
+                maxlength: "The maximum phone length is 10",
+            },
+            addressAdminPro: {
+                minlength: "Minimum address length is 5",
+                maxlength: "The maximum address length is 50"
+            }
+        },
+        errorLabelContainer: "#mdProfileAdmin .modal-alert-danger",
+        errorPlacement: function (error, element) {
+            error.appendTo("#mdProfileAdmin .modal-alert-danger");
+        },
+        showErrors: function (errorMap, errorList) {
+            if (this.numberOfInvalids() > 0) {
+                $("#mdProfileAdmin .modal-alert-danger").removeClass("hide").addClass("show");
+            } else {
+                $("#mdProfileAdmin .modal-alert-danger").removeClass("show").addClass("hide").empty();
+                $("#frmProfileAdmin input.error").removeClass("error");
+            }
+            this.defaultShowErrors();
+        },
+        submitHandler: function () {
+            doEditAdmin();
+        }
+    });
+
+    let btnEditAdmin = $("#btnEdit");
+    btnEditAdmin.on('click', () => {
+        $("#frmProfileAdmin").submit();
+    });
+    // end edit
+
+    // let location;
+    let provinces = [];
+    let districts = [];
+    let wards = [];
+
+    // API Province
+    function getAllProvinces() {
+        return $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "GET",
+            url: "https://vapi.vnappmob.com/api/province/"
+        })
+            .done((data) => {
+                $.each(data.results, (i, item) => {
+                    let str = `<option value="${item.province_id}">${item.province_name}</option>`;
+                    // $("#provinceAdminCreate").append(str);
+                    $("#provinceAdminPro").append(str);
+
+                });
+                provinces = data;
+            })
+            .fail((jqXHR) => {
+
+            })
+    }
+
+    function getAllDistrictsByProvinceId(provinceId) {
+        return $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "GET",
+            url: "https://vapi.vnappmob.com/api/province/district/" + provinceId
+        })
+            .done((data) => {
+                if (data.results.length !== 0) {
+                    // $('#districtAdminCreate').empty();
+                    $('#districtAdminPro').empty();
+
+                    $.each(data.results, (i, item) => {
+                        let str = `<option value="${item.district_id}">${item.district_name}</option>`;
+                        // $("#districtAdminCreate").append(str);
+                        $("#districtAdminPro").append(str);
+                    });
+                    districts = data;
+                } else {
+                    Swal.fire({
+                        title: "Province invalid!",
+                        icon: 'question',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            })
+            .fail((jqXHR) => {
+
+            })
+    }
+
+
+    function getAllWardsByDistrictId(districtId) {
+        return $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "GET",
+            url: "https://vapi.vnappmob.com/api/province/ward/" + districtId
+        })
+            .done((data) => {
+                if (data.results.length !== 0) {
+                    // $('#wardAdminCreate').empty();
+                    $('#wardAdminPro').empty();
+
+                    $.each(data.results, (i, item) => {
+                        let str = `<option value="${item.ward_id}">${item.ward_name}</option>`;
+                        // $("#wardAdminCreate").append(str);
+                        $("#wardAdminPro").append(str);
+                    });
+                    wards = data;
+                } else {
+                    Swal.fire({
+                        title: "District invalid!",
+                        icon: 'question',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+
+            })
+            .fail((jqXHR) => {
+
+            })
+    }
+
+    function selectAddressToCreate() {
+        getAllProvinces().then(() => {
+            let provinceId = $("#provinceAdminCreate").val();
+
+            getAllDistrictsByProvinceId(provinceId).then(() => {
+
+                let districtId = $("#districtAdminCreate").val();
+
+                getAllWardsByDistrictId(districtId);
+            });
+        })
+    }
+
+    function selectAddressToUpdate() {
+        getAllProvinces().then(() => {
+            let provinceId = $("#provinceAdminPro").val();
+
+            getAllDistrictsByProvinceId(provinceId).then(() => {
+
+                let districtId = $("#districtAdminPro").val();
+
+                getAllWardsByDistrictId(districtId);
+            });
+        })
+    }
+
+    function changeLocationEdit() {
+        $("#provinceAdminPro").change(() => {
+
+            let provinceId = $("#provinceAdminPro").val();
+
+            getAllDistrictsByProvinceId(provinceId).then(() => {
+
+                let districtId = $("#districtAdminPro").val();
+
+                getAllWardsByDistrictId(districtId);
+            })
+        })
+
+        $("#districtAdminPro").change(() => {
+            let districtId = $("#districtAdminPro").val();
+
+            getAllWardsByDistrictId(districtId);
+        })
+    }
+    // END API province
+
+    function closeMessage() {
+        $('.closeMess').on('click', () => {
+            $('.modal-alert-danger').empty().removeClass('show').addClass('hide');
+        })
+    }
+
+    function closeError(key) {
+        let btnClose = $('.closeErr');
+        btnClose.on('click', () => {
+            $('.modal-alert-danger').empty().removeClass('show').addClass('hide');
+        })
+    }
+
+    // validate Email
+    $.validator.addMethod('valid_email', function (value) {
+        const regex = /^[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{1,5}$/;
+        return value.trim().match(regex);
+    }, "(Email invalid!Ex: abc@def.xyz)");
+
+    // validate Phone
+    $.validator.addMethod('isPhone', function (value) {
+        const regex = /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
+        return value.trim().match(regex);
+    }, "Phone number format in Vietnam");
+</script>
+
+</body>
+</html>

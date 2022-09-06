@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/assets/AM.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/assets/css/sweetalert2.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/custom-dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/blue.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/login.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/tooltip.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/flying.css">
+</head>
+<body>
+
+<div class="hero">
+    <div class="form-box">
+        <div class="button-box">
+            <div id="btnBox"></div>
+            <button type="button" class="toggle-btn login-box-btn">Login</button>
+            <button type="button" class="toggle-btn register-box-btn">Register</button>
+        </div>
+        <form id="frmLogin" class="input-group-login">
+            <input type="text" id="usnLogin" class="input-field" placeholder="Email">
+            <input type="password" id="pwdLogin" class="input-field" placeholder="Password">
+            <div class="checkbox icheck">
+                <label>
+                    <input type="checkbox" class="" value="remember"><span> Remember login</span>
+                </label>
+            </div>
+            <button type="button" id="btnLogin" class="btn submit-btn">Login</button>
+        </form>
+
+        <form id="frmRegister" class="input-group">
+            <input type="hidden" id="roleReg" value="3" >
+            <input type="text" id="usnReg" class="input-field" placeholder="Email">
+            <input type="password" id="pwdReg" class="input-field" placeholder="Password">
+            <input type="text" id="fnReg" class="input-field" placeholder="Full Name">
+            <input type="text" id="phoneReg" class="input-field" placeholder="Phone">
+
+            <div class="col-md-3">
+                <select class="form-control input-field"  id="province" name="province"></select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control input-field" id="district" name="district"></select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control input-field" id="ward" name="ward"></select>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control input-field" id="address" placeholder="Address" name="address">
+            </div>
+
+            <button type="button" id="btnRegister" class="btn submit-btn">Register</button>
+        </form>
+    </div>
+</div>
+
+<section>
+    <div class="clouds">
+        <img src="/assets/images/plane/cloudx.png" alt="" style="--i:1;">
+        <img src="/assets/images/plane/cloudx.png" alt="" style="--i:2;">
+    </div>
+    <div class="clouds clouds2">
+        <img src="/assets/images/plane/cloudx.png" alt="" style="--i:1;">
+        <img src="/assets/images/plane/cloudx.png" alt="" style="--i:2;">
+    </div>
+    <div class="runway"></div>
+    <img src="/assets/images/plane/airbus_a380.png" class="plane" alt="">
+    <div id="speed" style="top: -200px; width: 100px; position: relative; color: #ed8b8b;">
+        <span>250</span>
+        km/h
+    </div>
+</section>
+
+<script type="text/javascript" src="/assets/js/jquery-3.6.0.js"></script>
+<script type="text/javascript" src="/assets/js/notify-0.4.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/icheck.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.page.js"></script>
+
+<script type="text/javascript">
+    let page = {
+        urls: {
+            register: AppPage.BASE_URL_AUTH + "/member/register",
+            login: AppPage.BASE_URL_AUTH + "/member/login",
+        },
+        elements: {},
+        commands: {}
+    }
+
+
+
+    let curIdx = 0,
+        speed,
+        speedUp,
+        speedDown;
+
+    let locationRegion = new LocationRegion();
+    let role = new Role();
+
+
+    page.elements.section = $("section");
+    page.elements.frmLogin = $("#frmLogin");
+    page.elements.usnLogin = $("#usnLogin");
+    page.elements.pwdLogin = $("#pwdLogin");
+
+    page.elements.frmRegister = $("#frmRegister");
+    page.elements.usnReg = $("#usnReg");
+    page.elements.pwdReg = $("#pwdReg");
+    page.elements.fnReg = $("#fnReg");
+    page.elements.phoneReg = $("#phoneReg");
+
+    page.elements.btnBox = $("#btnBox");
+    page.elements.loginBoxBtn = $(".login-box-btn");
+    page.elements.registerBoxBtn = $(".register-box-btn");
+    page.elements.btnLogin = $("#btnLogin");
+    page.elements.btnRegister = $("#btnRegister");
+    page.elements.frmRegSelect = $("#frmRegister .role .custom-select");
+    page.elements.frmRegSelectSpan = $("#frmRegister .role .custom-select__trigger span");
+    page.elements.frmRegOpt = $("#frmRegister .role .custom-option");
+    page.elements.frmRegOpts = $("#frmRegister .role .custom-options");
+    page.elements.frmResOptWrapper = $("#frmRegister .role .custom-select-wrapper")
+
+    page.commands.switchLoginForm = () => {
+        page.elements.frmLogin.css("left", "50px");
+        page.elements.frmRegister.css("left", "450px");
+        page.elements.btnBox.css("left", 0);
+
+        setTimeout(function () {
+            page.elements.loginBoxBtn.css("color", "#fff");
+            page.elements.registerBoxBtn.css("color", "#000");
+        }, 100);
+    }
+
+    page.commands.switchRegisterForm = () => {
+        page.elements.frmLogin.css("left", "-400px");
+        page.elements.frmRegister.css("left", "50px");
+        page.elements.btnBox.css("left", "132px");
+
+        setTimeout(function () {
+            page.elements.loginBoxBtn.css("color", "#000");
+            page.elements.registerBoxBtn.css("color", "#fff");
+        }, 100);
+    }
+
+    page.commands.login = () => {
+        let user = {
+            username: page.elements.usnLogin.val(),
+            password: page.elements.pwdLogin.val()
+        }
+
+        $.ajax({
+            type: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: page.urls.login,
+            data: JSON.stringify(user)
+        }).done((resp) => {
+            AppPage.Notify.showSuccessAlert("Logged in successfully !");
+
+            setTimeout(function () {
+                window.location.href = "/";
+            }, 1000);
+
+        }).fail(function () {
+            AppPage.Notify.showErrorAlert("The email or password is incorrect, please check the information again");
+        });
+    }
+
+    page.commands.register = () => {
+        let user = {
+            username: page.elements.usnReg.val(),
+            password: page.elements.pwdReg.val(),
+
+            fullName : $("#fnReg").val(),
+            phone: $("#phoneReg").val(),
+            role: {
+                id: $("#roleReg").val()
+            },
+            locationRegion: {
+
+                "provinceId": $("#province").val(),
+                "provinceName":$("#province :selected").text(),
+                "districtId": $("#district").val(),
+                "districtName": $("#district :selected").text(),
+                "wardId": $("#ward").val(),
+                "wardName": $("#ward :selected").text(),
+                "address": $("#address").val()
+            }
+        }
+
+        console.log(role);
+        console.log(locationRegion);
+        $.ajax({
+            type: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "http://localhost:8099/api/auth/member/register",
+            data: JSON.stringify(user)
+        }).done((resp) => {
+            // alert("okey")
+            AppPage.Notify.showSuccessAlert("Successful account registration !");
+
+            setTimeout(function () {
+                page.elements.usnLogin.val(page.elements.usnReg.val());
+                page.elements.pwdLogin.val(page.elements.pwdReg.val());
+                page.commands.switchLoginForm();
+            }, 1000);
+
+        }).fail(function (jqXHR) {
+            console.log(jqXHR);
+            page.elements.frmLogin[0].reset();
+
+            if (jqXHR.responseJSON) {
+                if (jqXHR.responseJSON.message) {
+                    AppPage.Notify.showErrorAlert(jqXHR.responseJSON.message);
+                }
+                else {
+                    $.each(jqXHR.responseJSON, function (key, value) {
+                        AppPage.Notify.showErrorAlert(value);
+                    });
+                }
+            }
+            else {
+                AppPage.Notify.showErrorAlert("Something went wrong, please try again");
+            }
+        });
+    }
+
+    page.commands.planeHandle = () => {
+        $(document).on('keydown', function(e) {
+            if(e.keyCode === 8) {
+                $(".hero").removeClass("hide");
+                $("section").css("display", "none");
+            }
+
+            if(e.keyCode === 67) {
+                if ($("img.plane").width() === 250) {
+
+                    $("section img.plane").attr("src","assets/images/plane/" + arrPlane[curIdx].code + ".png");
+                    AppPage.Notify.showSuccessAlert(arrPlane[curIdx].name + " ready to take off");
+
+                    if (curIdx === arrPlane.length - 1) {
+                        curIdx = 0;
+                    } else {
+                        curIdx++;
+                    }
+                }
+            }
+        });
+    }
+
+    page.commands.speedHandle = () => {
+        page.elements.section.on('mousedown touchstart', function(e) {
+
+            if (!speedUp) {
+                speedUp = setInterval(function(){
+                    speed = $("img.plane").width();
+
+                    $("#speed span").html(speed);
+
+                    if (speed === 250) {
+                        clearInterval(speedUp);
+                        speedUp = undefined;
+                    }
+
+                }, 100);
+            }
+
+        });
+
+        page.elements.section.on('mouseup mouseleave touchend', function(e) {
+
+            if (!speedDown) {
+                speedDown = setInterval(function(){
+                    speed = $("img.plane").width();
+
+                    $("#speed span").html(speed);
+
+                    if (speed === 250) {
+                        clearInterval(speedDown);
+                        speedDown = undefined;
+                    }
+
+                }, 100);
+            }
+
+        });
+    }
+
+    page.initializeControlEvent = () => {
+
+        page.elements.loginBoxBtn.on("click", function () {
+            page.commands.switchLoginForm();
+        });
+
+        page.elements.registerBoxBtn.on("click", function () {
+            page.commands.switchRegisterForm();
+        });
+
+        page.elements.frmRegOpt.on("click", function () {
+            let role_name = $(this).html();
+            page.elements.frmRegSelectSpan.html(role_name);
+            page.elements.frmRegOpts.find(".selected").removeClass("selected");
+            $(this).addClass("selected");
+        });
+
+        page.elements.btnLogin.on("click", function () {
+            page.commands.login();
+        });
+
+        page.elements.btnRegister.on("click", function () {
+            page.commands.register();
+        });
+
+        page.elements.frmResOptWrapper.on("click", function (event) {
+            event.stopPropagation();
+            page.elements.frmRegSelect.toggleClass("open");
+        });
+
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%'
+        });
+
+        $(document).on("click", function () {
+            page.elements.frmRegSelect.removeClass("open");
+        });
+
+        $(".tooltip .airplane").on("click", function () {
+            $(".hero").addClass("hide");
+            $("section").css("display", "flex");
+        });
+
+        page.commands.planeHandle();
+
+        page.commands.speedHandle();
+    }
+
+    $(() => {
+        page.initializeControlEvent();
+    });
+
+    function drawProvinces(){
+        return $.ajax({
+            "headers": {
+                "accept": " application/json",
+                "content-type": "application/json"
+            },
+            "type": "GET",
+            "url": "https://vapi.vnappmob.com/api/province/"
+        })
+            .done((data) =>{
+                $.each(data.results, (i,item)=>{
+                    let str = `<option value="${item.province_id}">${item.province_name}</option>`;
+                    $('#province').prepend(str);
+                    $('#provinceUp').prepend(str);
+                })
+            })
+            .fail((jqXHR)=>{
+                App.IziToast.showErrorAlert("Không thể tải danh sách tỉnh thành phố")
+            })
+
+    }
+
+    function drawDistricts(provinceId) {
+        return $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "GET",
+            "url": "https://vapi.vnappmob.com/api/province/district/" + provinceId,
+        })
+            .done((data) => {
+                $('#district').html('');
+                $('#districtUp').html('');
+
+                if (data.results.length === 0) {
+                    App.IziToast.showErrorAlert('Không thể tải danh sách Quận - Phường - Huyện');
+                }
+                else {
+                    $.each(data.results, (i, item) => {
+                        let str = `<option value="${item.district_id}">${item.district_name}</option>`;
+
+                        $('#district').prepend(str);
+                        $('#districtUp').prepend(str);
+                    })
+                }
+            });
+    }
+
+    function drawWards(districtId) {
+        return $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "GET",
+            "url": "https://vapi.vnappmob.com/api/province/ward/" + districtId,
+        })
+            .done((data) => {
+                $('#ward').html('');
+                $('#wardUp').html('');
+
+                if (data.results.length === 0) {
+                    App.IziToast.showErrorAlert('Không thể tải danh sách xã - thị trấn');
+                }
+                else {
+                    $.each(data.results, (i, item) => {
+                        let str = `<option value="${item.ward_id}">${item.ward_name}</option>`;
+
+                        $('#ward').prepend(str);
+                        $('#wardUp').prepend(str);
+                    })
+                }
+            });
+    }
+    drawProvinces().then(()=>{
+        let provinceId = $('#province').val();
+        drawDistricts(provinceId).then(()=>{
+            let districtId = $('#district').val();
+            drawWards(districtId);
+        })
+    });
+
+    $("#province").on('change', () => {
+        let provinceId = $('#province').val();
+
+        drawDistricts(provinceId).then(() => {
+            let districtId = $('#district').val();
+            drawWards(districtId);
+        });
+    });
+
+    $("#provinceUp").on('change', () => {
+        let provinceId = $('#provinceUp').val();
+
+        drawDistricts(provinceId).then(() => {
+            let districtId = $('#districtUp').val();
+            drawWards(districtId);
+        });
+    });
+
+
+    $("#district").on('change', () => {
+        let districtId = $('#district').val();
+        drawWards(districtId);
+    });
+
+    $("#districtUp").on('change', ()=>{
+        let districtId = $("#districtUp").val();
+        drawWards(districtId);
+    })
+
+</script>
+
+
+</body>
+</html>
